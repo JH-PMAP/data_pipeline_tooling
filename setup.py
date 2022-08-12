@@ -13,6 +13,11 @@ setup(
     version="0.01",
     description="A library for databricks jobs api",
     long_description=README,
+    author="Eric Schles",
+    author_email="eschles3@jh.edu",
+    classifiers=[
+        "Programming Language :: Python :: 3.8"
+    ],
     long_description_content_type="text/markdown",
     packages=["databricks_tooling"],
     include_package_data=True,
