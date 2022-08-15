@@ -10,13 +10,14 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="databricks_tooling",
-    version="0.03",
+    version="0.04",
     description="A library for databricks jobs api",
     long_description=README,
     author="Eric Schles",
     author_email="eschles3@jh.edu",
     license="MIT",
     classifiers=[
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.8"
     ],
     long_description_content_type="text/markdown",
