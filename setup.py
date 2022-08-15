@@ -24,7 +24,9 @@ setup(
     ],
     packages=["data_pipeline_tooling"],
     include_package_data=True,
-    install_requires=["requests", "fire", "azure-storage", "azure-core"],
+    install_requires=[
+        "requests", "fire", "azure-storage-blob", "azure-storage-file-datalake", "azure-core"
+    ],
     console_scripts=["scripts/orchestrator_cli"],
     scripts=["scripts/orchestrator_cli"],
 )
