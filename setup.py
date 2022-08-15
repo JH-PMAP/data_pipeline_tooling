@@ -16,6 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Eric Schles",
     author_email="eschles3@jh.edu",
+    url="https://github.com/JH-PMAP/data_pipeline_tooling",
     license="MIT",
     classifiers=[
         "License :: OSI Approved :: MIT License",
