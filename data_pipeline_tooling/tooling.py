@@ -31,7 +31,7 @@ class Orca:
             project : str = None,
             write_out_to_config : bool = False,
             timezone_id : str = "America/New_York",
-            pause_status : str = "UNPAUSED",
+            pause_status : str = "PAUSED",
     ):
         """
 
