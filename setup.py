@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="data_pipeline_tooling",
-    version="0.04",
+    version="0.07",
     description="A library for databricks jobs api",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -27,7 +27,8 @@ setup(
     packages=["data_pipeline_tooling"],
     include_package_data=True,
     install_requires=[
-        "requests", "fire", "azure-storage-blob", "azure-storage-file-datalake", "azure-core"
+        "requests", "fire", "azure-storage-blob", "azure-storage-file-datalake", "azure-core",
+        "azure-storage-file-share"
     ],
     console_scripts=["scripts/orchestrator_cli"],
     scripts=["scripts/orchestrator_cli"],
