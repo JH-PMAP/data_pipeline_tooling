@@ -7,7 +7,8 @@ import sys
 from azure.storage.filedatalake import DataLakeServiceClient
 from azure.core._match_conditions import MatchConditions
 from azure.storage.filedatalake._models import ContentSettings
-
+from azure.storage.fileshare import ShareFileClient
+    
 # This library takes these docs:
 # https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-directory-file-acl-python
 # and puts them into library form.
@@ -213,6 +214,10 @@ def copy_to_blob_storage(connection_string, file_name, container_name):
         blob_client.upload_blob(data, overwrite=True)
 
 
+def copy_to_file_share(connection_string, file_name, share_name):
+    file_client = ShareFileClient.from_connection_string(
+        conn_str=connection_string, share_name=share_name, file_path=file_name
+    )
 
-    
-
+    with open(file_name, "rb") as source_file:
+        file_client.upload_file(source_file)
