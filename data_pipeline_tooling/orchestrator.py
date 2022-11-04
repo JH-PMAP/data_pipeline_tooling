@@ -1006,3 +1006,158 @@ def delete_run(run_id: str, host: str, headers: dict) -> requests.Response:
         f"{host}/api/2.1/jobs/runs/delete", headers=headers, json=parameters
     )
     return response
+
+
+######################################################################################
+# Databricks Repos API - https://docs.databricks.com/dev-tools/api/latest/repos.html #
+######################################################################################
+def get_repos(
+        host: str,
+        path_prefix: str,
+        next_page_token: str,
+        headers:dict
+    ) -> requests.Response:
+    """
+    Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/get-repos
+
+    Returns repos that the calling user has Manage permissions on. Results are paginated with each page containing twenty repos.
+
+    Parameters
+    ----------
+    * host: str - the host IP Address
+
+    * path_prefix : str - Filters repos that have paths starting with the given path prefix.
+
+    * next_page_token : str - Token used to get the next page of results.
+    If not specified, returns the first page of results as well as a next page token if there are more results.
+
+    * headers: dict - the headers come from the config
+    and should not be changed
+    """
+    parameters = {
+        "path_prefix": str(path_prefix),
+        "next_page_token": str(next_page_token)
+    }
+    response = requests.get(
+        f'{host}/api/2.1/repos',
+        headers=headers,
+        json=parameters
+    )
+    return response
+
+def create_repo(
+        host: str,
+        url: str,
+        provider: str,
+        path: str,
+        headers: dict
+    ) -> requests.Response:
+    """
+    Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/create-repo
+
+    Creates a repo in the workspace and links it to the remote Git repo specified.
+    Note that repos created programmatically must be linked to a remote Git repo, unlike repos created in the browser.
+
+    Parameters
+    ----------
+
+    * host: str - the host IP Address
+
+    * url: str - URL of the Git repository to be linked.
+
+    * provider: str - Git provider. Case insensitive. Available providers are:
+        - gitHub
+        - bitbucketCloud
+        - gitLab
+        - azureDevOpsServices
+        - gitHubEnterprise
+        - bitbucketServer
+        - gitLabEnterpriseEdition
+        - awsCodeCommit
+
+    * path: str - Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}.
+
+    * header: dict - the headers come from the config and should not be changed
+    """
+    parameters = {
+        "url": str(url),
+        "provider": str(provider),
+        "path": str(path)
+    }
+    response = requests.post(
+        f'{host}/api/2.1/repos',
+        headers=headers,
+        json=parameters
+    )
+    return response
+
+def update_repo(
+        host: str,
+        repo_id: str,
+        branch: str = None,
+        tag: str = None,
+        headers: dict
+    ) -> requests.Response:
+    """
+    Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/update-repo
+
+    Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same branch.
+
+
+    Parameters
+    ----------
+
+    * host: str - the host IP Address
+
+    Requires one of the following to update the repo:
+        * branch: str - Branch that the local version of the repo is checked out to.
+        * tag: str - Tag that the local version of the repo is checked out to.
+                Updating the repo to a tag puts the repo in a detached HEAD state.
+                Before committing new changes, you must update the repo to a branch instead of the detached HEAD.
+
+    * repo_id: str - The ID for the corresponding repo to access.
+
+    * headers: dict - the headers come from the config and should not be changed
+    """
+    parameters = {}
+    if branch and tag:
+        raise Exception('Both branch and tag parameters cannot be passed together.')
+    if branch:
+        parameters["branch"] = str(branch)
+    elif tag:
+        parameters["tag"] = str(tag)
+    response = requests.patch(
+        f'{host}/api/2.1/repos/{repo_id}',
+        headers=headers,
+        json=parameters
+    )
+    return response
+
+def delete_repo(
+        host: str,
+        repo_id: str,
+        headers: dict
+    ) -> requests.Response:
+    """
+    Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/delete-repo
+
+    Deletes the specified repo.
+
+    Parameters
+    ----------
+
+    * host: str - the host IP Address
+
+    * repo_id: str - The ID for the corresponding repo to access.
+
+    * headers: dict - the headers come from the config and should not be changed
+    """
+    parameters = {
+        "repo_id": str(repo_id)
+    }
+    response = requests.post(
+        f'{host}/api/2.1/repos/{repo_id}',
+        headers=headers,
+        json=parameters
+    )
+    return response
