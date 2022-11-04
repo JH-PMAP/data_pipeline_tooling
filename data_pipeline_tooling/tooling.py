@@ -18,6 +18,7 @@ class Orca:
             max_concurrent_runs : int,
             timeout_seconds : int,
             schedule : str,
+            airflow_config : str = '',
             config : bool = True,
             cluster_id : str = None,
             storage_account_name : str = None,
@@ -88,6 +89,10 @@ class Orca:
         
         https://www.freeformatter.com/cron-expression-generator-quartz.html 
         
+        * airflow_config [optional] : str - a string containing the job id's and 
+        task paths.  If write_out_to_config=False, it is recommended to make use of
+        this parameter.  
+
         * config [optional] : bool - whether to read from a config file, named
         config.py or not.
         Note: must be in the same directory as the tool is being run from.
@@ -225,12 +230,15 @@ class Orca:
         print(f"Job ID: {int(job.json()['job_id'])}")
 
         if write_out_to_config:
-
             job_identifier = file_name.split(".")[0]
             with open(f"airflow_config_{self.repo_name}_{self.run_type}_{self.version_id}.py", "a") as f:
                 f.write(f"job_{job_identifier} = {int(job.json()['job_id'])}\n")
                 f.write(f"task_{job_identifier} = '{task_file_path}'\n")
-                # add file name to write out
+        else:    
+            airflow_config += f"job_{job_identifier} = {int(job.json()['job_id'])}\n"
+            airflow_config += f"task_{job_identifier} = '{task_file_path}'\n")
+        return airflow_config
+            
     
     def upload_task(
             self,
@@ -304,6 +312,7 @@ class Orca:
             filesystem_name,
             storage_account_key=storage_account_key
         )
+        # add directory variable pass through
         if file_path == './':
             directory = f"{repo_name}/{run_type}/{version_id}/"
         else:
@@ -362,7 +371,7 @@ def create_jobs_and_upload(
         config=True, cluster_id=None, storage_account_name=None,
         storage_account_key=None, host=None, headers=None, filesystem_name=None,
         user_name=None, email_notifications=None, repo_name=None, project=None,
-        write_out_to_config=False):
+        write_out_to_config=False, airflow_config=''):
     """
     Creates a set of jobs.
     
@@ -398,6 +407,10 @@ def create_jobs_and_upload(
     helps:
 
     https://www.freeformatter.com/cron-expression-generator-quartz.html 
+
+    * airflow_config [optional] : str - a string containing the job id's and 
+    task paths.  If write_out_to_config=False, it is recommended to make use of
+    this parameter.  
 
     * config [optional] : bool - whether to read from a config file, named
     config.py or not.
@@ -455,8 +468,6 @@ def create_jobs_and_upload(
 
     If job is paused, then it doesn't run even when executed.  To 'actually' run
     it must be in the UNPAUSED state.
-        
-
     """
     
     orca = Orca()
@@ -466,7 +477,7 @@ def create_jobs_and_upload(
         # if this becomes unweildy we can change it later
         file_path = "./"
         job_name = job_names[index]
-        orca.create_job(
+        airflow_config += orca.create_job(
             job_name, file_name, file_path, run_type,
             version_id, max_concurrent_runs, timeout_seconds,
             schedule, config=config, cluster_id=cluster_id,
@@ -476,7 +487,9 @@ def create_jobs_and_upload(
             user_name=user_name, email_notifications=email_notifications,
             repo_name=repo_name, project=project,
             write_out_to_config=write_out_to_config,
+            airflow_config=airflow_config
         )
+    return airflow_config
 
 def databricks_mount_container_blob(
   storage_account_name: str,
