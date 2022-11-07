@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import fire
-from databricks_tooling.artifact_store import AzureDataLakeClient
-from databricks_tooling import orchestrator
+from data_pipeline_tooling.artifact_store import AzureDataLakeClient
+from data_pipeline_tooling import orchestrator
 import os
 import sys
 
