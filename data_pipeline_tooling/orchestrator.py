@@ -1,6 +1,6 @@
 from typing import List, Dict
 import requests
-
+import json
 
 def create_job(
     name: str,
@@ -1039,7 +1039,7 @@ def get_repos(
         "next_page_token": str(next_page_token)
     }
     response = requests.get(
-        f'{host}/api/2.1/repos',
+        f'{host}/api/2.0/repos',
         headers=headers,
         json=parameters
     )
@@ -1085,7 +1085,7 @@ def create_repo(
         "path": str(path)
     }
     response = requests.post(
-        f'{host}/api/2.1/repos',
+        f'{host}/api/2.0/repos',
         headers=headers,
         json=parameters
     )
@@ -1094,9 +1094,9 @@ def create_repo(
 def update_repo(
         host: str,
         repo_id: str,
+        headers: dict,
         branch: str = None,
-        tag: str = None,
-        headers: dict
+        tag: str = None
     ) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/update-repo
@@ -1127,7 +1127,7 @@ def update_repo(
     elif tag:
         parameters["tag"] = str(tag)
     response = requests.patch(
-        f'{host}/api/2.1/repos/{repo_id}',
+        f'{host}/api/2.0/repos/{repo_id}',
         headers=headers,
         json=parameters
     )
@@ -1156,8 +1156,33 @@ def delete_repo(
         "repo_id": str(repo_id)
     }
     response = requests.post(
-        f'{host}/api/2.1/repos/{repo_id}',
+        f'{host}/api/2.0/repos/{repo_id}',
         headers=headers,
         json=parameters
     )
     return response
+
+#########################################################################################################
+# Databricks Workspace API - https://docs.databricks.com/dev-tools/api/latest/workspace.html#get-status #
+#########################################################################################################
+
+def get_repo_id(
+        host: str,
+        email: str,
+        repo_name: str,
+        headers: dict,
+    ) -> requests.Response:
+    """
+    """
+    data = f'{{ "path": "/Repos/{email}" }}'
+    response = requests.get(
+        f'{host}/api/2.0/workspace/list',
+        headers=headers,
+        data=data
+    )
+    json_response = json.loads(response.content)
+    repo_id = [repo['object_id'] for repo in json_response['objects'] if repo_name in repo['path']][0]
+    if response.status_code != 200:
+        raise Exception('Workspace API did not return a 200 Response')
+    else: 
+        return repo_id
