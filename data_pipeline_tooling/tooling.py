@@ -3,7 +3,6 @@ from . import orchestrator
 import os
 import sys
 
-
 class Orca:
     def __init__(self):
         pass
@@ -236,7 +235,7 @@ class Orca:
                 f.write(f"task_{job_identifier} = '{task_file_path}'\n")
         else:    
             airflow_config += f"job_{job_identifier} = {int(job.json()['job_id'])}\n"
-            airflow_config += f"task_{job_identifier} = '{task_file_path}'\n")
+            airflow_config += f"task_{job_identifier} = '{task_file_path}'\n"
         return airflow_config
             
     
@@ -252,6 +251,7 @@ class Orca:
             filesystem_name : str = None,
             project : str = None,
             config : bool = True,
+            mode : str = 'r'
     ):
         """
         Uploads a task to azure datalake.
@@ -318,8 +318,9 @@ class Orca:
         else:
             directory = f"{repo_name}/{run_type}/{version_id}/{file_path}"
         datalake_client.create_directory(directory)
-        datalake_client.upload_file(file_path+file_name, directory+file_name)
+        datalake_client.upload_file(file_path+file_name, directory+file_name, mode=mode)
         return f"dbfs:/mnt/{project}/{directory}{file_name}"
+
 
     def execute_job(self, job_id):
         """
