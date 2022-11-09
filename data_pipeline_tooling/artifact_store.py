@@ -100,12 +100,11 @@ class AzureDataLakeClient:
         except Exception as e:
             raise e
 
-    def upload_file(self, local_file_path, remote_file_path):
+    def upload_file(self, local_file_path, remote_file_path, mode='r'):
         try:
             file_client = self.get_file_client(remote_file_path)
-            with open(local_file_path) as local_file:
+            with open(local_file_path, mode) as local_file:
                 contents = local_file.read()
-                
             file_client.append_data(
                 data=contents,
                 offset=0,
@@ -169,7 +168,7 @@ class AzureDataLakeClient:
         self.upload_file(
             local_file_path, remote_file_path
         )
-        
+
     # run before orchestrator
     def recursive_copy(self, root, run_type, version_id, repo_name):
         """

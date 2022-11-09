@@ -1094,9 +1094,9 @@ def create_repo(
 def update_repo(
         host: str,
         repo_id: str,
+        headers: dict,
         branch: str = None,
         tag: str = None,
-        headers: dict
     ) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/update-repo
