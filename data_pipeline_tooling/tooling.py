@@ -301,11 +301,11 @@ class Orca:
         if config:
             self.read_config()
 
-        storage_account_name = self.storage_account_name
-        storage_account_key = self.storage_account_key
-        repo_name = self.repo_name
-        filesystem_name = self.filesystem_name
-        project = self.project
+            storage_account_name = self.storage_account_name
+            storage_account_key = self.storage_account_key
+            repo_name = self.repo_name
+            filesystem_name = self.filesystem_name
+            project = self.project
 
         datalake_client = AzureDataLakeClient(
             storage_account_name,
