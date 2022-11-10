@@ -8,4 +8,5 @@ import sys
 
 if __name__ == '__main__':
     orca = tooling.Orca()
+    orca.read_config()
     fire.Fire(orca)
