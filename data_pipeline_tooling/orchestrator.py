@@ -1,6 +1,6 @@
 from typing import List, Dict
 import requests
-
+import json
 
 def create_job(
     name: str,
@@ -1161,5 +1161,37 @@ def delete_repo(
         f'{host}/api/2.1/repos/{repo_id}',
         headers=headers,
         json=parameters
+    )
+    return response
+
+def install_wheel(
+        host: str,
+        dbfs_path: str,
+        cluster_id: str,
+        token: str
+    ):
+    """
+    Original Docs: https://learn.microsoft.com/en-us/azure/databricks/dev-tools/ci-cd/ci-cd-azure-devops#install-the-library-on-a-cluster
+
+    Calls the Libraries Install endpoint to install a python package wheel on a cluster.
+
+    * host: str - the host IP address
+
+    * dbfs_path: str - file path to the python whl file.
+
+    * cluster_id: str - Databricks cluster ID
+
+    * token: str - Private Access token in Databricks.
+        For our dev environment, new access tokens can be generated here: https://adb-6903455853782873.13.azuredatabricks.net/?o=6903455853782873#setting/account
+    """
+    install_url = f'{host}/api/2.0/libraries/install'
+    values = json.dumps({
+        'cluster_id': cluster_id,
+        'libraries': [{'whl': dbfs_path}]
+    })
+    response = requests.post(
+        install_url,
+        data=values,
+        auth=("token", token)
     )
     return response
