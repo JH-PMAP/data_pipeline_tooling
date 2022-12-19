@@ -700,15 +700,17 @@ def execute_standalone_job(
     * headers: dict - the headers come from the config
     and should not be changed
     """
-    parameters = {
-        "tasks": tasks,
-        "job_clusters": job_clusters,
-        "run_name": run_name,
-        "timeout_seconds": str(timeout_seconds),
-        "idempotency_token": idempotency_token,
-        "access_control_list": access_control_list,
-    }
-
+    parameters = {}
+    parameters["tasks"] = tasks
+    parameters["run_name"] = run_name,
+    parameters["timeout_seconds"] = str(timeout_seconds),
+    parameters["access_control_list"] = access_control_list
+    
+    if job_clusters:
+        parameters["job_clusters"] = job_clusters
+    if idempotency_token:
+        parameters["idempotency_token"] = idempotency_token
+        
     response = requests.post(
         f"{host}/api/2.1/jobs/runs/submit", headers=headers, json=parameters
     )
