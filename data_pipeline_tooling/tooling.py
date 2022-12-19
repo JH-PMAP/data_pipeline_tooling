@@ -366,6 +366,18 @@ class Orca:
         self.repo_name = repo_name
         self.project = project
 
+    def install_wheel(
+        self,
+        host: str,
+        dbfs_path: str,
+        cluster_id: str,
+        token: str):
+        """
+        CLI command which calls the Libraries Install endpoint to install a python package wheel on a cluster.
+        """
+        orchestrator.install_wheel(host, dbfs_path, cluster_id, token)
+
+
 def create_jobs_and_upload(
         file_names, job_names, run_type, version_id,
         max_concurrent_runs, timeout_seconds, schedule,
