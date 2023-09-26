@@ -27,7 +27,7 @@ class Orca:
             filesystem_name : str = None,
             user_name : str = None,
             email_notifications : dict = None,
-            repo_name : str = None,
+            dag_name : str = None,
             project : str = None,
             write_out_to_config : bool = False,
             timezone_id : str = "America/New_York",
@@ -121,8 +121,8 @@ class Orca:
         * email_notifications [optional] : bool - whether to notify the user by email on
         job failures.
 
-        * repo_name [optional] : str - the name of the github repo 
-        (or other version control system repo name).
+        * dag_name [optional] : str - the name of the dag name
+        (or other version control system dag name).
 
         * project [optional] : str - the name of the project.
         
@@ -165,7 +165,7 @@ class Orca:
         self.user_name = user_name
         self.email_notifications = email_notifications
         self.timeout_seconds = timeout_seconds
-        self.repo_name = repo_name
+        self.dag_name = dag_name
         self.project = project
         if config:
             self.read_config()
@@ -176,7 +176,7 @@ class Orca:
             storage_account_key=self.storage_account_key,
             run_type=self.run_type,
             version_id=self.version_id,
-            repo_name=self.repo_name,
+            dag_name=self.dag_name,
             file_path=self.file_path,
             filesystem_name=self.filesystem_name,
             project=self.project,
@@ -230,7 +230,7 @@ class Orca:
 
         if write_out_to_config:
             job_identifier = file_name.split(".")[0]
-            with open(f"airflow_config_{self.repo_name}_{self.run_type}_{self.version_id}.py", "a") as f:
+            with open(f"airflow_config_{self.dag_name}_{self.run_type}_{self.version_id}.py", "a") as f:
                 f.write(f"job_{job_identifier} = {int(job.json()['job_id'])}\n")
                 f.write(f"task_{job_identifier} = '{task_file_path}'\n")
         else:    
@@ -246,7 +246,7 @@ class Orca:
             storage_account_name : str = None,
             storage_account_key : str = None,
             version_id : int = None,
-            repo_name : str = None,
+            dag_name : str = None,
             file_path : str = None,
             filesystem_name : str = None,
             project : str = None,
@@ -290,8 +290,8 @@ class Orca:
         
         * filesystem_name [optional] : str - the name of the azure datalake filesystem.
         
-        * repo_name [optional] : str - the name of the github repo 
-        (or other version control system repo name).
+        * dag_name [optional] : str - the name of the dag 
+        (or other version control system dag name).
 
         * project [optional] : str - the name of the project.
 
@@ -303,7 +303,7 @@ class Orca:
 
             storage_account_name = self.storage_account_name
             storage_account_key = self.storage_account_key
-            repo_name = self.repo_name
+            dag_name = self.dag_name
             filesystem_name = self.filesystem_name
             project = self.project
 
@@ -314,9 +314,9 @@ class Orca:
         )
         # add directory variable pass through
         if file_path == './':
-            directory = f"{repo_name}/{run_type}/{version_id}/"
+            directory = f"{dag_name}/{run_type}/{version_id}/"
         else:
-            directory = f"{repo_name}/{run_type}/{version_id}/{file_path}"
+            directory = f"{dag_name}/{run_type}/{version_id}/{file_path}"
         datalake_client.create_directory(directory)
         datalake_client.upload_file(file_path+file_name, directory+file_name, mode=mode)
         return f"dbfs:/mnt/{project}/{directory}{file_name}"
@@ -353,7 +353,7 @@ class Orca:
             storage_account_key,
             cluster_id, filesystem_name,
             user_name, email_notifications,
-            repo_name, project
+            dag_name, project
         )
         self.headers = headers
         self.host = host
@@ -363,7 +363,7 @@ class Orca:
         self.filesystem_name = filesystem_name
         self.user_name = user_name
         self.email_notifications = email_notifications
-        self.repo_name = repo_name
+        self.dag_name = dag_name
         self.project = project
 
     def install_wheel(
@@ -383,7 +383,7 @@ def create_jobs_and_upload(
         max_concurrent_runs, timeout_seconds, schedule,
         config=True, cluster_id=None, storage_account_name=None,
         storage_account_key=None, host=None, headers=None, filesystem_name=None,
-        user_name=None, email_notifications=None, repo_name=None, project=None,
+        user_name=None, email_notifications=None, dag_name=None, project=None,
         write_out_to_config=False, airflow_config=''):
     """
     Creates a set of jobs.
@@ -454,8 +454,8 @@ def create_jobs_and_upload(
     * email_notifications [optional] : bool - whether to notify the user by email on
     job failures.
 
-    * repo_name [optional] : str - the name of the github repo 
-    (or other version control system repo name).
+    * dag_name [optional] : str - the name of the dag 
+    (or other version control system dag name).
 
     * project [optional] : str - the name of the project.
 
@@ -498,7 +498,7 @@ def create_jobs_and_upload(
             storage_account_key=storage_account_key, host=host,
             headers=headers, filesystem_name=filesystem_name,
             user_name=user_name, email_notifications=email_notifications,
-            repo_name=repo_name, project=project,
+            dag_name=dag_name, project=project,
             write_out_to_config=write_out_to_config,
             airflow_config=airflow_config
         )
