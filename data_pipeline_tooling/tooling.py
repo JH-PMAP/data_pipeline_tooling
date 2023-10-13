@@ -470,13 +470,8 @@ def create_jobs_and_upload(
     * email_notifications [optional] : bool - whether to notify the user by email on
     job failures.
 
-<<<<<<< HEAD
     * repo_name [optional] : str - the name of the github repo
     (or other version control system repo name).
-=======
-    * dag_name [optional] : str - the name of the dag 
-    (or other version control system dag name).
->>>>>>> 91ea1e56826712cb048c8927e1728bd62aef9877
 
     * project [optional] : str - the name of the project.
 
@@ -523,7 +518,6 @@ def create_jobs_and_upload(
             config=config,
             cluster_id=cluster_id,
             storage_account_name=storage_account_name,
-<<<<<<< HEAD
             storage_account_key=storage_account_key,
             host=host,
             headers=headers,
@@ -532,12 +526,6 @@ def create_jobs_and_upload(
             email_notifications=email_notifications,
             repo_name=repo_name,
             project=project,
-=======
-            storage_account_key=storage_account_key, host=host,
-            headers=headers, filesystem_name=filesystem_name,
-            user_name=user_name, email_notifications=email_notifications,
-            dag_name=dag_name, project=project,
->>>>>>> 91ea1e56826712cb048c8927e1728bd62aef9877
             write_out_to_config=write_out_to_config,
             airflow_config=airflow_config,
         )
