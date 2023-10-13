@@ -22,13 +22,17 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9"
+        "Programming Language :: Python :: 3.9",
     ],
     packages=["data_pipeline_tooling"],
     include_package_data=True,
     install_requires=[
-        "requests", "fire", "azure-storage-blob", "azure-storage-file-datalake", "azure-core",
-        "azure-storage-file-share"
+        "requests",
+        "fire",
+        "azure-storage-blob",
+        "azure-storage-file-datalake",
+        "azure-core",
+        "azure-storage-file-share",
     ],
     console_scripts=["scripts/orchestrator_cli"],
     scripts=["scripts/orchestrator_cli"],

@@ -2,6 +2,7 @@ from typing import List, Dict
 import requests
 import json
 
+
 def create_job(
     name: str,
     tasks: List[Dict],
@@ -702,15 +703,15 @@ def execute_standalone_job(
     """
     parameters = {}
     parameters["tasks"] = tasks
-    parameters["run_name"] = run_name,
-    parameters["timeout_seconds"] = str(timeout_seconds),
+    parameters["run_name"] = (run_name,)
+    parameters["timeout_seconds"] = (str(timeout_seconds),)
     parameters["access_control_list"] = access_control_list
-    
+
     if job_clusters:
         parameters["job_clusters"] = job_clusters
     if idempotency_token:
         parameters["idempotency_token"] = idempotency_token
-        
+
     response = requests.post(
         f"{host}/api/2.1/jobs/runs/submit", headers=headers, json=parameters
     )
@@ -1014,11 +1015,8 @@ def delete_run(run_id: str, host: str, headers: dict) -> requests.Response:
 # Databricks Repos API - https://docs.databricks.com/dev-tools/api/latest/repos.html #
 ######################################################################################
 def get_repos(
-        host: str,
-        path_prefix: str,
-        next_page_token: str,
-        headers:dict
-    ) -> requests.Response:
+    host: str, path_prefix: str, next_page_token: str, headers: dict
+) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/get-repos
 
@@ -1038,22 +1036,15 @@ def get_repos(
     """
     parameters = {
         "path_prefix": str(path_prefix),
-        "next_page_token": str(next_page_token)
+        "next_page_token": str(next_page_token),
     }
-    response = requests.get(
-        f'{host}/api/2.1/repos',
-        headers=headers,
-        json=parameters
-    )
+    response = requests.get(f"{host}/api/2.1/repos", headers=headers, json=parameters)
     return response
 
+
 def create_repo(
-        host: str,
-        url: str,
-        provider: str,
-        path: str,
-        headers: dict
-    ) -> requests.Response:
+    host: str, url: str, provider: str, path: str, headers: dict
+) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/create-repo
 
@@ -1081,25 +1072,18 @@ def create_repo(
 
     * header: dict - the headers come from the config and should not be changed
     """
-    parameters = {
-        "url": str(url),
-        "provider": str(provider),
-        "path": str(path)
-    }
-    response = requests.post(
-        f'{host}/api/2.1/repos',
-        headers=headers,
-        json=parameters
-    )
+    parameters = {"url": str(url), "provider": str(provider), "path": str(path)}
+    response = requests.post(f"{host}/api/2.1/repos", headers=headers, json=parameters)
     return response
 
+
 def update_repo(
-        host: str,
-        repo_id: str,
-        headers: dict,
-        branch: str = None,
-        tag: str = None,
-    ) -> requests.Response:
+    host: str,
+    repo_id: str,
+    headers: dict,
+    branch: str = None,
+    tag: str = None,
+) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/update-repo
 
@@ -1123,23 +1107,18 @@ def update_repo(
     """
     parameters = {}
     if branch and tag:
-        raise Exception('Both branch and tag parameters cannot be passed together.')
+        raise Exception("Both branch and tag parameters cannot be passed together.")
     if branch:
         parameters["branch"] = str(branch)
     elif tag:
         parameters["tag"] = str(tag)
     response = requests.patch(
-        f'{host}/api/2.1/repos/{repo_id}',
-        headers=headers,
-        json=parameters
+        f"{host}/api/2.1/repos/{repo_id}", headers=headers, json=parameters
     )
     return response
 
-def delete_repo(
-        host: str,
-        repo_id: str,
-        headers: dict
-    ) -> requests.Response:
+
+def delete_repo(host: str, repo_id: str, headers: dict) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/repos.html#operation/delete-repo
 
@@ -1154,22 +1133,14 @@ def delete_repo(
 
     * headers: dict - the headers come from the config and should not be changed
     """
-    parameters = {
-        "repo_id": str(repo_id)
-    }
+    parameters = {"repo_id": str(repo_id)}
     response = requests.post(
-        f'{host}/api/2.1/repos/{repo_id}',
-        headers=headers,
-        json=parameters
+        f"{host}/api/2.1/repos/{repo_id}", headers=headers, json=parameters
     )
     return response
 
-def install_wheel(
-        host: str,
-        dbfs_path: str,
-        cluster_id: str,
-        token: str
-    ):
+
+def install_wheel(host: str, dbfs_path: str, cluster_id: str, token: str):
     """
     Original Docs: https://learn.microsoft.com/en-us/azure/databricks/dev-tools/ci-cd/ci-cd-azure-devops#install-the-library-on-a-cluster
 
@@ -1184,14 +1155,7 @@ def install_wheel(
     * token: str - Private Access token in Databricks.
         For our dev environment, new access tokens can be generated here: https://adb-6903455853782873.13.azuredatabricks.net/?o=6903455853782873#setting/account
     """
-    install_url = f'{host}/api/2.0/libraries/install'
-    values = json.dumps({
-        'cluster_id': cluster_id,
-        'libraries': [{'whl': dbfs_path}]
-    })
-    response = requests.post(
-        install_url,
-        data=values,
-        auth=("token", token)
-    )
+    install_url = f"{host}/api/2.0/libraries/install"
+    values = json.dumps({"cluster_id": cluster_id, "libraries": [{"whl": dbfs_path}]})
+    response = requests.post(install_url, data=values, auth=("token", token))
     return response
