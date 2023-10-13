@@ -166,7 +166,7 @@ class Orca:
         self.user_name = user_name
         self.email_notifications = email_notifications
         self.timeout_seconds = timeout_seconds
-        self.repo_name = repo_name
+        self.dag_name = dag_name
         self.project = project
         if config:
             self.read_config()
@@ -177,7 +177,7 @@ class Orca:
             storage_account_key=self.storage_account_key,
             run_type=self.run_type,
             version_id=self.version_id,
-            repo_name=self.repo_name,
+            dag_name=self.dag_name,
             file_path=self.file_path,
             filesystem_name=self.filesystem_name,
             project=self.project,
@@ -303,7 +303,7 @@ class Orca:
 
             storage_account_name = self.storage_account_name
             storage_account_key = self.storage_account_key
-            repo_name = self.repo_name
+            dag_name = self.dag_name
             filesystem_name = self.filesystem_name
             project = self.project
 
@@ -316,7 +316,7 @@ class Orca:
         if file_path == "./":
             directory = f"{repo_name}/{run_type}/{version_id}/"
         else:
-            directory = f"{repo_name}/{run_type}/{version_id}/{file_path}"
+            directory = f"{dag_name}/{run_type}/{version_id}/{file_path}"
         datalake_client.create_directory(directory)
         datalake_client.upload_file(
             file_path + file_name, directory + file_name, mode=mode
@@ -369,7 +369,7 @@ class Orca:
         self.filesystem_name = filesystem_name
         self.user_name = user_name
         self.email_notifications = email_notifications
-        self.repo_name = repo_name
+        self.dag_name = dag_name
         self.project = project
 
     def install_wheel(self, host: str, dbfs_path: str, cluster_id: str, token: str):
@@ -470,8 +470,13 @@ def create_jobs_and_upload(
     * email_notifications [optional] : bool - whether to notify the user by email on
     job failures.
 
+<<<<<<< HEAD
     * repo_name [optional] : str - the name of the github repo
     (or other version control system repo name).
+=======
+    * dag_name [optional] : str - the name of the dag 
+    (or other version control system dag name).
+>>>>>>> 91ea1e56826712cb048c8927e1728bd62aef9877
 
     * project [optional] : str - the name of the project.
 
@@ -518,6 +523,7 @@ def create_jobs_and_upload(
             config=config,
             cluster_id=cluster_id,
             storage_account_name=storage_account_name,
+<<<<<<< HEAD
             storage_account_key=storage_account_key,
             host=host,
             headers=headers,
@@ -526,6 +532,12 @@ def create_jobs_and_upload(
             email_notifications=email_notifications,
             repo_name=repo_name,
             project=project,
+=======
+            storage_account_key=storage_account_key, host=host,
+            headers=headers, filesystem_name=filesystem_name,
+            user_name=user_name, email_notifications=email_notifications,
+            dag_name=dag_name, project=project,
+>>>>>>> 91ea1e56826712cb048c8927e1728bd62aef9877
             write_out_to_config=write_out_to_config,
             airflow_config=airflow_config,
         )
