@@ -166,10 +166,6 @@ class Orca:
         self.user_name = user_name
         self.email_notifications = email_notifications
         self.timeout_seconds = timeout_seconds
-        self.dag_name = dag_name
-        self.project = project
-        if config:
-            self.read_config()
 
         task_file_path = self.upload_task(
             self.file_name,
@@ -177,11 +173,9 @@ class Orca:
             storage_account_key=self.storage_account_key,
             run_type=self.run_type,
             version_id=self.version_id,
-            dag_name=self.dag_name,
             file_path=self.file_path,
             filesystem_name=self.filesystem_name,
-            project=self.project,
-            config=False,
+            config=config,
         )
 
         job_format = "SINGLE_TASK"
@@ -306,6 +300,7 @@ class Orca:
             dag_name = self.dag_name
             filesystem_name = self.filesystem_name
             project = self.project
+            repo_name = self.repo_name
 
         datalake_client = AzureDataLakeClient(
             storage_account_name,
@@ -359,6 +354,7 @@ class Orca:
             email_notifications,
             repo_name,
             project,
+            dag_name,
         )
 
         self.headers = headers
@@ -371,6 +367,8 @@ class Orca:
         self.email_notifications = email_notifications
         self.dag_name = dag_name
         self.project = project
+        self.repo_name = repo_name
+        print ('in read config, self.repo_name = ', self.repo_name)
 
     def install_wheel(self, host: str, dbfs_path: str, cluster_id: str, token: str):
         """
@@ -498,7 +496,6 @@ def create_jobs_and_upload(
     If job is paused, then it doesn't run even when executed.  To 'actually' run
     it must be in the UNPAUSED state.
     """
-
     orca = Orca()
     for index, file_name in enumerate(file_names):
         # we set a convention that the filepath
@@ -506,6 +503,7 @@ def create_jobs_and_upload(
         # if this becomes unweildy we can change it later
         file_path = "./"
         job_name = job_names[index]
+        print ('before create_job call, repo name is ', repo_name)
         airflow_config += orca.create_job(
             job_name,
             file_name,

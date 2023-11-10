@@ -10,12 +10,12 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="data_pipeline_tooling",
-    version="0.14",
+    version="0.16",
     description="A library for databricks jobs api",
     long_description=README,
     long_description_content_type="text/markdown",
-    author="Eric Schles",
-    author_email="eschles3@jh.edu",
+    author="Lior Shahverdi",
+    author_email="lshahve1@jh.edu",
     url="https://github.com/JH-PMAP/data_pipeline_tooling",
     license="MIT",
     classifiers=[
