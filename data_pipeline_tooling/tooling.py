@@ -376,6 +376,18 @@ class Orca:
         """
         orchestrator.install_wheel(host, dbfs_path, cluster_id, token)
 
+    def uninstall_wheel(self, host: str, dbfs_path: str, cluster_id: str, token: str):
+        """
+        CLI command which calls the Libraries Install endpoint to uninstall a python package wheel on a cluster.
+        """
+        orchestrator.uninstall_wheel(host, dbfs_path, cluster_id, token)
+
+    def restart_cluster(self, host: str, cluster_id: str, token: str):
+        """
+        CLI command which calls the Clusters restart endpoint to uninstall a python package wheel on a cluster.
+        """
+        orchestrator.restart_cluster(host, cluster_id, token)
+
 
 def create_jobs_and_upload(
     file_names,

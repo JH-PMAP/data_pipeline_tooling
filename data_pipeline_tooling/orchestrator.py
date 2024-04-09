@@ -1159,3 +1159,15 @@ def install_wheel(host: str, dbfs_path: str, cluster_id: str, token: str):
     values = json.dumps({"cluster_id": cluster_id, "libraries": [{"whl": dbfs_path}]})
     response = requests.post(install_url, data=values, auth=("token", token))
     return response
+
+def uninstall_wheel(host: str, dbfs_path: str, cluster_id: str, token: str):
+    uninstall_url = f"{host}/api/2.0/libraries/uninstall"
+    values = json.dumps({"cluster_id": cluster_id, "libraries": [{"whl": dbfs_path}]})
+    response = requests.post(uninstall_url, data=values, auth=("token", token))
+    return response
+
+def restart_cluster(host: str, cluster_id: str, token: str):
+    restart_url = f"{host}/api/2.0/clusters/restart"
+    values = json.dumps({"cluster_id": cluster_id})
+    response = requests.post(restart_url, data=values, auth=("token", token))
+    return response
