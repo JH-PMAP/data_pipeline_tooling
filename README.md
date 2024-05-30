@@ -14,7 +14,7 @@ Current Python version : 3.9
 
 1. run ```build_install_wheel.sh``` for local testing
 
-3. wheel file generated will be in ```dist``` folder
+2. wheel file generated will be in ```dist``` folder
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
