@@ -9,7 +9,14 @@ TODO: Guide users through getting your code up and running on their own system. 
 4.	API references
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+
+Current Python version : 3.9
+
+1. ```pip install -r requirements.txt```
+
+2. ```python -m build --wheel```
+
+3. wheel file will be generated under ```dist``` folder
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

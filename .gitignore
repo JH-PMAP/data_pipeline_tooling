@@ -1,0 +1,27 @@
+# VSCode specific files
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA specific files
+.idea/
+*.iws
+*.iml
+*.ipr
+.DS_Store
+
+# Databricks specific files
+*.dbc
+.databricks/
+
+#virtualenv specific files
+venv/
+.venv/
+ENV/
+
+# Jupyter Notebook specific files
+.ipynb_checkpoints
+.ipynb_checkpoints/*
+
+dist/
+build/
+data_pipeline_tooling.egg-info/
