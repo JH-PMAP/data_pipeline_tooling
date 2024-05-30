@@ -12,11 +12,9 @@ TODO: Guide users through getting your code up and running on their own system. 
 
 Current Python version : 3.9
 
-1. ```pip install -r requirements.txt```
+1. run ```build_install_wheel.sh``` for local testing
 
-2. ```python -m build --wheel```
-
-3. wheel file will be generated under ```dist``` folder
+3. wheel file generated will be in ```dist``` folder
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
