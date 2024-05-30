@@ -156,11 +156,22 @@ def create_job(
         "access_control_list": access_control_list,
     }
 
-    response = requests.post(
-        f"{host}/api/2.1/jobs/create", headers=headers, json=parameters
-    )
+    try:
+        response = requests.post(
+            f"{host}/api/2.1/jobs/create", headers=headers, json=parameters
+        )
+        # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+        response.raise_for_status()  
+    except requests.exceptions.HTTPError as errh:
+        print(f'HTTP Error: {errh}')
+        print(f'HTTP Error response: {errh.response.text}')
+    except requests.exceptions.ConnectionError as errc:
+        print(f'Error Connecting: {errc}')
+    except requests.exceptions.Timeout as errt:
+        print(f'Timeout Error: {errt}')
+    except requests.exceptions.RequestException as err:
+        print(f'OOps: Something Else: {err}')
     return response
-
 
 def get_jobs(
     limit: int, offset: int, expand_tasks: bool, host: str, api: str, headers: dict
@@ -1152,8 +1163,7 @@ def install_wheel(host: str, dbfs_path: str, cluster_id: str, token: str):
 
     * cluster_id: str - Databricks cluster ID
 
-    * token: str - Private Access token in Databricks.
-        For our dev environment, new access tokens can be generated here: https://adb-6903455853782873.13.azuredatabricks.net/?o=6903455853782873#setting/account
+    * token: str - Private Access token in Databricks workspace.
     """
     install_url = f"{host}/api/2.0/libraries/install"
     values = json.dumps({"cluster_id": cluster_id, "libraries": [{"whl": dbfs_path}]})
