@@ -203,35 +203,38 @@ class Orca:
         access_control_list = [
             {"user_name": self.user_name, "permission_level": "IS_OWNER"}
         ]
-        job = orchestrator.create_job(
-            self.job_name,
-            tasks,
-            job_clusters,
-            self.email_notifications,
-            timeout_seconds,
-            schedule,
-            self.max_concurrent_runs,
-            job_format,
-            access_control_list,
-            self.host,
-            self.headers,
-        )
+        try:
+            job = orchestrator.create_job(
+                self.job_name,
+                tasks,
+                job_clusters,
+                self.email_notifications,
+                timeout_seconds,
+                schedule,
+                self.max_concurrent_runs,
+                job_format,
+                access_control_list,
+                self.host,
+                self.headers,
+            )
 
-        print(f"Task File Path: {task_file_path}")
-        print(f"Job ID: {int(job.json()['job_id'])}")
+            print(f"Task File Path: {task_file_path}")
+            print(f"Job ID: {int(job.json()['job_id'])}")
 
-        if write_out_to_config:
-            job_identifier = file_name.split(".")[0]
-            with open(
-                f"airflow_config_{self.repo_name}_{self.run_type}_{self.version_id}.py",
-                "a",
-            ) as f:
-                f.write(f"job_{job_identifier} = {int(job.json()['job_id'])}\n")
-                f.write(f"task_{job_identifier} = '{task_file_path}'\n")
-        else:
-            airflow_config += f"job_{job_identifier} = {int(job.json()['job_id'])}\n"
-            airflow_config += f"task_{job_identifier} = '{task_file_path}'\n"
-        return airflow_config
+            if write_out_to_config:
+                job_identifier = file_name.split(".")[0]
+                with open(
+                    f"airflow_config_{self.repo_name}_{self.run_type}_{self.version_id}.py",
+                    "a",
+                ) as f:
+                    f.write(f"job_{job_identifier} = {int(job.json()['job_id'])}\n")
+                    f.write(f"task_{job_identifier} = '{task_file_path}'\n")
+            else:
+                airflow_config += f"job_{job_identifier} = {int(job.json()['job_id'])}\n"
+                airflow_config += f"task_{job_identifier} = '{task_file_path}'\n"
+            return airflow_config
+        except Exception as e:
+            print ("Create job failed!! Message = ", e)
 
     def upload_task(
         self,
@@ -316,7 +319,8 @@ class Orca:
         datalake_client.upload_file(
             file_path + file_name, directory + file_name, mode=mode
         )
-        return f"dbfs:/mnt/{project}/{directory}{file_name}"
+        return f"dbfs:/Volumes/project_k/storage/code/{directory}{file_name}"
+        #return f"dbfs:/mnt/pmpkdevdatalakefs/precgs_pipeline/{run_type}/{version_id}/{file_name}"
 
     def execute_job(self, job_id):
         """
@@ -515,7 +519,6 @@ def create_jobs_and_upload(
         # if this becomes unweildy we can change it later
         file_path = "./"
         job_name = job_names[index]
-        print ('before create_job call, repo name is ', repo_name)
         airflow_config += orca.create_job(
             job_name,
             file_name,
