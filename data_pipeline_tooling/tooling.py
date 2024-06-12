@@ -319,8 +319,8 @@ class Orca:
         datalake_client.upload_file(
             file_path + file_name, directory + file_name, mode=mode
         )
-        return f"dbfs:/Volumes/project_k/storage/code/{directory}{file_name}"
-        #return f"dbfs:/mnt/pmpkdevdatalakefs/precgs_pipeline/{run_type}/{version_id}/{file_name}"
+        #return f"dbfs:/Volumes/project_k/storage/code/{directory}{file_name}"
+        return f"dbfs:/mnt/pmpkdevdatalakefs/precgs_pipeline/{run_type}/{version_id}/{file_name}"
 
     def execute_job(self, job_id):
         """
