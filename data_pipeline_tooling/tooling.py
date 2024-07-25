@@ -311,10 +311,11 @@ class Orca:
             storage_account_key=storage_account_key,
         )
         # add directory variable pass through
+        print ("file path is ", [file_path])
         if file_path == "./":
             directory = f"{repo_name}/{run_type}/{version_id}/"
         else:
-            directory = f"{dag_name}/{run_type}/{version_id}/{file_path}"
+            directory = f"{repo_name}/{run_type}/{version_id}/{file_path}"
         datalake_client.create_directory(directory)
         datalake_client.upload_file(
             file_path + file_name, directory + file_name, mode=mode

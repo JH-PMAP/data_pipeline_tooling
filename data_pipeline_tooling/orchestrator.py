@@ -1170,4 +1170,5 @@ def restart_cluster(host: str, cluster_id: str, token: str):
     restart_url = f"{host}/api/2.0/clusters/restart"
     values = json.dumps({"cluster_id": cluster_id})
     response = requests.post(restart_url, data=values, auth=("token", token))
+    print(response.status_code, response.content)
     return response
