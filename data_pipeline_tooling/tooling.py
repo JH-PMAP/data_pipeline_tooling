@@ -186,7 +186,7 @@ class Orca:
                 "depends_on": [],
                 "existing_cluster_id": self.cluster_id,
                 "spark_python_task": {"python_file": task_file_path, "parameters": []},
-                "timeout_seconds": 1000,
+                #"timeout_seconds": 0,
                 "max_retries": 3,
                 "min_retry_interval_millis": 10000,
                 "retry_on_timeout": "true",
