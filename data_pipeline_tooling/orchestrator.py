@@ -15,6 +15,7 @@ def create_job(
     access_control_list: List[Dict],
     host: str,
     headers: dict,
+    tags: dict
 ) -> requests.Response:
     """
     Original Docs: https://docs.databricks.com/dev-tools/api/latest/jobs.html#operation/JobsCreate
@@ -154,6 +155,7 @@ def create_job(
         "max_concurrent_runs": max_concurrent_runs,
         "format": job_format,
         "access_control_list": access_control_list,
+        "tags": tags
     }
 
     try:

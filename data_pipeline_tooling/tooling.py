@@ -29,7 +29,7 @@ class Orca:
         user_name: str = None,
         email_notifications: dict = None,
         repo_name: str = None,
-        project: str = None,
+        volume_prefix_path: str = None,
         write_out_to_config: bool = False,
         timezone_id: str = "America/New_York",
         pause_status: str = "PAUSED",
@@ -125,7 +125,7 @@ class Orca:
         * repo_name [optional] : str - the name of the github repo
         (or other version control system repo name).
 
-        * project [optional] : str - the name of the project.
+        * volume_prefix_path [optional] : str - the name of the volume_prefix_path, example values /Volumes/uc_catalog_name/storage/code for Unity catalog or /mnt/filesystem_name for non Unity catalog.
 
         END of 'semi optional' parameters
 
@@ -198,6 +198,12 @@ class Orca:
             "timezone_id": timezone_id,
             "pause_status": pause_status,
         }
+        tags = {
+            "user_name": self.user_name,
+            "repo_name": self.repo_name,
+            "dag_name": self.dag_name,
+            "cluster_id": self.cluster_id,
+        }
         max_concurrent_runs = self.max_concurrent_runs
 
         access_control_list = [
@@ -215,6 +221,7 @@ class Orca:
             access_control_list,
             self.host,
             self.headers,
+            tags
         )
 
         print(f"Task File Path: {task_file_path}")
@@ -223,7 +230,7 @@ class Orca:
         if write_out_to_config:
             job_identifier = file_name.split(".")[0]
             with open(
-                f"airflow_config_{self.repo_name}_{self.run_type}_{self.version_id}.py",
+                f"airflow_config_{self.dag_name}_{self.run_type}_{self.version_id}.py",
                 "a",
             ) as f:
                 f.write(f"job_{job_identifier} = {int(job.json()['job_id'])}\n")
@@ -243,7 +250,7 @@ class Orca:
         repo_name: str = None,
         file_path: str = None,
         filesystem_name: str = None,
-        project: str = None,
+        volume_prefix_path: str = None,
         config: bool = True,
         mode: str = "r",
     ):
@@ -287,8 +294,7 @@ class Orca:
         * repo_name [optional] : str - the name of the github repo
         (or other version control system repo name).
 
-        * project [optional] : str - the name of the project.
-
+        * volume_prefix_path [optional] : str - the name of the volume_prefix_path, example values /Volumes/uc_catalog_name/storage/code for Unity catalog or /mnt/filesystem_name for non Unity catalog.
         * config [optional] : bool - if True read from the config.py
         Don't read if False.
         """
@@ -299,7 +305,7 @@ class Orca:
             storage_account_key = self.storage_account_key
             dag_name = self.dag_name
             filesystem_name = self.filesystem_name
-            project = self.project
+            volume_prefix_path = self.volume_prefix_path
             repo_name = self.repo_name
 
         datalake_client = AzureDataLakeClient(
@@ -308,6 +314,7 @@ class Orca:
             storage_account_key=storage_account_key,
         )
         # add directory variable pass through
+        # TODO - remove if else statement as file_path is always root "./"
         if file_path == "./":
             directory = f"{repo_name}/{run_type}/{version_id}/"
         else:
@@ -316,7 +323,7 @@ class Orca:
         datalake_client.upload_file(
             file_path + file_name, directory + file_name, mode=mode
         )
-        return f"dbfs:/Volumes/{project}/storage/code/{directory}{file_name}"
+        return f"dbfs:{volume_prefix_path}/{directory}{file_name}"
 
     def execute_job(self, job_id):
         """
@@ -353,7 +360,7 @@ class Orca:
             user_name,
             email_notifications,
             repo_name,
-            project,
+            volume_prefix_path,
             dag_name,
         )
 
@@ -366,7 +373,7 @@ class Orca:
         self.user_name = user_name
         self.email_notifications = email_notifications
         self.dag_name = dag_name
-        self.project = project
+        self.volume_prefix_path = volume_prefix_path
         self.repo_name = repo_name
         print ('in read config, self.repo_name = ', self.repo_name)
 
@@ -407,7 +414,7 @@ def create_jobs_and_upload(
     user_name=None,
     email_notifications=None,
     repo_name=None,
-    project=None,
+    volume_prefix_path=None,
     write_out_to_config=False,
     airflow_config="",
 ):
@@ -483,7 +490,7 @@ def create_jobs_and_upload(
     * repo_name [optional] : str - the name of the github repo
     (or other version control system repo name).
 
-    * project [optional] : str - the name of the project.
+    * volume_prefix_path [optional] : str - the name of the volume_prefix_path, example values /Volumes/uc_catalog_name/storage/code for Unity catalog or /mnt/filesystem_name for non Unity catalog.
 
     END of 'semi optional' parameters
 
@@ -535,7 +542,7 @@ def create_jobs_and_upload(
             user_name=user_name,
             email_notifications=email_notifications,
             repo_name=repo_name,
-            project=project,
+            volume_prefix_path=volume_prefix_path,
             write_out_to_config=write_out_to_config,
             airflow_config=airflow_config,
         )
