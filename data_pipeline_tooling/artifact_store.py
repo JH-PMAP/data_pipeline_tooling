@@ -201,9 +201,13 @@ def copy_to_blob_storage(connection_string, file_name, container_name):
         blob_client.upload_blob(data, overwrite=True)
 
 
-def copy_to_file_share(connection_string, file_name, share_name):
+def copy_to_file_share(connection_string, file_name, share_name, dag_folder_name=None):
+    if dag_folder_name is not None:
+        file_path = f"{dag_folder_name}/{file_name}"
+    else:
+        file_path = f"dags/{file_name}"
     file_client = ShareFileClient.from_connection_string(
-        conn_str=connection_string, share_name=share_name, file_path=file_name
+        conn_str=connection_string, share_name=share_name, file_path=file_path
     )
 
     with open(file_name, "rb") as source_file:
